@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Pipe : MonoBehaviour
 {
     public static Pipe instance;
 
-    [SerializeField] private float speed = 0.002f;
+    [SerializeField] private float speed = 0.0015f;
 
     void Start()
     {
