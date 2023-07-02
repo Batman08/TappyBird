@@ -1,35 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PipeSpawner : MonoBehaviour
 {
     public GameObject pipe;
 
-    private const float _startTime = .2f;
-    private const float _repeatRate = 2f;
+    private const float _startTime = 1f;
+    private const float _repeatRate = 1.2f;
 
-    void Start()
+    private void Start()
     {
+        Repeat();
+    }
 
+    private void Repeat()
+    {
         if (GameControl.GameControlInstance.GameOver == false)
-        {
-            //InvokeRepeating(nameof(SpawnPipe), 1, 1.2f);
-            InvokeRepeating(methodName:nameof(SpawnPipe), time:_startTime, repeatRate: _repeatRate);
-        }
+            InvokeRepeating(nameof(SpawnPipe), _startTime, _repeatRate);
     }
 
-    void Update()
+    private void Update()
     {
-        if (GameControl.GameControlInstance.GameOver == true)
-        {
-            CancelInvoke(nameof(SpawnPipe));
-        }
+        StopSpawning();
     }
 
-    void SpawnPipe()
+    private void StopSpawning()
+    {
+        bool hasGameEnded = GameControl.GameControlInstance.GameOver == true;
+        if (hasGameEnded)
+            CancelInvoke(nameof(SpawnPipe));
+    }
+
+    private void SpawnPipe()
     {
         Instantiate(pipe, transform.position, Quaternion.identity, transform);
     }
-
 }
