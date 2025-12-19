@@ -100,3 +100,4 @@ InitTestScene*.unity*
 
 /Development/src/TappyBird/Library/**
 /Development/src/TappyBird/UserSettings/**
+/Development/src/TappyBird/obj/**
