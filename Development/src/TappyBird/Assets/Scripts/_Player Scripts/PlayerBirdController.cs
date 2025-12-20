@@ -74,7 +74,7 @@ public class PlayerBirdController : MonoBehaviour
             if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
             {
                 source.Play();
-                rb2d.velocity = Vector2.zero;
+                rb2d.linearVelocity = Vector2.zero;
                 rb2d.AddForce(MovementForce());
                 anim.SetTrigger("Flap");
                 if (Input.GetMouseButton(0))
@@ -119,7 +119,7 @@ public class PlayerBirdController : MonoBehaviour
     {
         StartCoroutine(DestroyPlayer(8));
         _collider2D.enabled = false;
-        rb2d.velocity = Vector2.zero;
+        rb2d.linearVelocity = Vector2.zero;
         isDead = true;
         GameControl.GameControlInstance.BirdDied();
     }
