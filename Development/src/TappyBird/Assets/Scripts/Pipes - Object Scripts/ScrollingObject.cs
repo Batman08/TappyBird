@@ -9,14 +9,14 @@ public class ScrollingObject : MonoBehaviour
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
-        rb2d.velocity = new Vector2(GameControl.GameControlInstance.ScrollSpeed, 0);
+        rb2d.linearVelocity = new Vector2(GameControl.GameControlInstance.ScrollSpeed, 0);
     }
 
     void Update()
     {
         if (GameControl.GameControlInstance.GameOver == true)
         {
-            rb2d.velocity = Vector2.zero;
+            rb2d.linearVelocity = Vector2.zero;
         }
     }
 }
