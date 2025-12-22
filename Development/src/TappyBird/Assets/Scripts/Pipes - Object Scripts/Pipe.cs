@@ -4,7 +4,7 @@ public class Pipe : MonoBehaviour
 {
     public static Pipe instance;
 
-    [SerializeField] private float speed = 0.0015f;
+    [SerializeField] private float speed = 0.35f; //0.0015f
 
     void Start()
     {
@@ -15,7 +15,7 @@ public class Pipe : MonoBehaviour
     {
         if (GameControl.GameControlInstance.GameOver == false)
         {
-            transform.Translate(Vector3.left * speed);
+            transform.Translate(Vector3.left * speed * Time.deltaTime);
         }
         else if (GameControl.GameControlInstance.GameOver == true)
         {
