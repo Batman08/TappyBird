@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine;
 
 public class GameControl : MonoBehaviour
 {
@@ -79,6 +77,8 @@ public class GameControl : MonoBehaviour
         GameOver = true;
         Source.Play();
     }
+
+    public float GetScore() => _score;
 
     public void ReloadGame() => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 

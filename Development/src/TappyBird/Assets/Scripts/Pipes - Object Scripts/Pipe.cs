@@ -5,6 +5,7 @@ public class Pipe : MonoBehaviour
     public static Pipe instance;
 
     [SerializeField] private float speed = 0.35f; //0.0015f
+    [SerializeField] private float speedIncreasePerPoint = 0.03f;
 
     void Start()
     {
@@ -15,7 +16,10 @@ public class Pipe : MonoBehaviour
     {
         if (GameControl.GameControlInstance.GameOver == false)
         {
-            transform.Translate(Vector3.left * speed * Time.deltaTime);
+            //transform.Translate(Vector3.left * speed * Time.deltaTime);
+            float currentSpeed = speed + (GameControl.GameControlInstance.GetScore() * speedIncreasePerPoint);
+            transform.Translate(Vector3.left * currentSpeed * Time.deltaTime);
+
         }
         else if (GameControl.GameControlInstance.GameOver == true)
         {
