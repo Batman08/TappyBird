@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine;
 
 public class Play : MonoBehaviour
 {
@@ -18,7 +16,7 @@ public class Play : MonoBehaviour
     {
         if (playAnim == transform)
         {
-            anim.SetTrigger("Flap");
+            anim.Play("Flap");
         }
     }
 
