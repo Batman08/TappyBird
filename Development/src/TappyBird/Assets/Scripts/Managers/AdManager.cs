@@ -15,6 +15,7 @@ public class AdManager : MonoBehaviour
     private readonly string TappyBird_KeepPlaying_Reward_Unit_Id = "";
 #endif
     private RewardedAd _rewardedAd;
+    private Reward _reward;
 
     private void Awake()
     {
@@ -96,7 +97,7 @@ public class AdManager : MonoBehaviour
                 Log.Info($"Reward received: {reward.Type}, amount: {reward.Amount}");
 
                 // The ad was showen and the user earned a reward.
-                OnShowRewardedAdCompleted?.Invoke(reward);
+                _reward = reward;
             });
         }
         else
@@ -118,6 +119,9 @@ public class AdManager : MonoBehaviour
 
     private void OnAdFullScreenContentClosed_ReloadAd()
     {
+        Debug.Log("Ad full screen content closed.");
+        OnShowRewardedAdCompleted?.Invoke(_reward);
+
         // Reload the ad so that we can show another as soon as possible.
         LoadRewardedAd();
     }
