@@ -1,15 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine;
 
 public class CurrentScore : MonoBehaviour
 {
     public Text scoreText;
     public Text currentScoreText;
 
-    void Start()
+    void OnEnable()
     {
-        scoreText.text = currentScoreText.text;
+        scoreText.text = $"{GameControl.GameControlInstance.GetScore()}";
     }
 }

@@ -1,14 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine;
 
 public class HighScore : MonoBehaviour
 {
     public Text scoreText;
 
-    void Start()
+    void OnEnable()
     {
-        scoreText.text = PlayerPrefs.GetInt("score").ToString();
+        int currentHighscore = PlayerPrefs.GetInt("score");
+        int.TryParse(scoreText.text, out int currentScore);
+
+        int highscore = currentScore > currentHighscore ? currentScore : currentHighscore;
+
+        scoreText.text = $"{highscore}";
     }
 }
