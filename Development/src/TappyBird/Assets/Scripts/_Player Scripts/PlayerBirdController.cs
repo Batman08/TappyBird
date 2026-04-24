@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PlayerBirdController : MonoBehaviour
 {
-
     //Upforce original -- 125f
     public float upForce;
     public float tiltSmooth = 5f;
@@ -33,6 +32,8 @@ public class PlayerBirdController : MonoBehaviour
     private void Start()
     {
         _rotationZ = Mathf.Clamp(transform.rotation.z, 0, 25);
+
+        Events();
     }
 
     private void Update()
@@ -114,7 +115,7 @@ public class PlayerBirdController : MonoBehaviour
 
     private void PlayerDeath()
     {
-        StartCoroutine(DestroyPlayer(8));
+        StartCoroutine(DestroyPlayer(time: 4f));
         _collider2D.enabled = false;
         rb2d.linearVelocity = Vector2.zero;
         isDead = true;
@@ -124,6 +125,35 @@ public class PlayerBirdController : MonoBehaviour
     private IEnumerator DestroyPlayer(float time)
     {
         yield return new WaitForSeconds(time);
-        Destroy(gameObject);
+        rb2d.bodyType = RigidbodyType2D.Kinematic;
     }
+
+
+    #region Events
+
+    private void Events()
+    {
+        GameControl.GameControlInstance.OnResetPlayer += EventListener_OnResetPlayer;
+        GameControl.GameControlInstance.OnKeepPlaying += EventListener_OnKeepPlaying;
+    }
+
+    private void EventListener_OnResetPlayer()
+    {
+        rb2d.linearVelocity = Vector2.zero;
+        rb2d.angularVelocity = 0f;
+
+        rb2d.bodyType = RigidbodyType2D.Kinematic;
+
+        transform.position = new Vector2(-0.52f, 0.8f);
+        transform.rotation = Quaternion.identity;
+    }
+
+    private void EventListener_OnKeepPlaying()
+    {
+        _collider2D.enabled = true;
+        isDead = false;
+        rb2d.bodyType = RigidbodyType2D.Dynamic;
+    }
+
+    #endregion
 }

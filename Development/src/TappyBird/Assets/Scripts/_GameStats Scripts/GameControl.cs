@@ -1,10 +1,17 @@
-﻿using UnityEngine;
+﻿using GoogleMobileAds.Api;
+using System;
+using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameControl : MonoBehaviour
 {
     public static GameControl GameControlInstance;
+
+    public event Action OnKeepPlaying;
+    public event Action OnResetPlayer;
+    public event Action OnResetPipeSpawner;
 
     public AudioSource Source;
     public GameObject GameOverText;
@@ -21,6 +28,11 @@ public class GameControl : MonoBehaviour
         Source = GetComponent<AudioSource>();
     }
 
+    void Start()
+    {
+        EventListener_OnShowRewardedAdCompleted();
+    }
+
     private GameControl GameControlSingleton()
     {
         if (GameControlInstance == null)
@@ -29,21 +41,6 @@ public class GameControl : MonoBehaviour
             Destroy(gameObject);
 
         return GameControlInstance;
-    }
-
-    void Update()
-    {
-        //ReloadScene();
-        ChangeTextWhenGameOver();
-    }
-
-    private void ChangeTextWhenGameOver()
-    {
-        if (GameOver)
-        {
-            ScoreText.text = null;
-            ScoreText2.text = null;
-        }
     }
 
     public void BirdScored()
@@ -75,6 +72,8 @@ public class GameControl : MonoBehaviour
         EndGame();
         GameOverText.SetActive(true);
         GameOver = true;
+        ScoreText.text = null;
+        ScoreText2.text = null;
         Source.Play();
     }
 
@@ -83,4 +82,73 @@ public class GameControl : MonoBehaviour
     public void ReloadGame() => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
     public void ExitGame() => SceneManager.LoadScene(0);
+
+
+
+    #region Keep Playing Ad Logic
+
+    private void EventListener_OnShowRewardedAdCompleted()
+    {
+        Log.Info("Subscribing to AdManager.Instance.OnShowRewardedAdCompleted event.");
+        AdManager.Instance.OnShowRewardedAdCompleted += HandleRewardedAd_KeepPlaying;
+    }
+
+    private void HandleRewardedAd_KeepPlaying(Reward reward)
+    {
+        Log.Info("KEEP PLAYING!!!!");
+
+        ScoreText2.text = "Score:";
+        ScoreText.text = $"{_score}";
+
+        GameOverText.SetActive(false);
+
+        OnResetPlayer.Invoke();
+        OnResetPipeSpawner.Invoke();
+
+        Time.timeScale = 0f;
+
+        //ToDo: start a UI countdown timer here
+
+        StartCoroutine(KeepPlayingDelay());
+    }
+
+    private IEnumerator KeepPlayingDelay()
+    {
+        yield return new WaitForSeconds(seconds: 5f);
+
+        Time.timeScale = 1f;
+        GameOver = false;
+        OnKeepPlaying.Invoke();
+    }
+
+
+    public void OnClickDone_KeepPlaying()
+    {
+        try
+        {
+            AdManager.Instance.ShowRewardedAd();
+        }
+        catch (Exception)
+        {
+            string errorMessage = "Reward Ad unavailable. Please try again in a moment.";
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+        AndroidJavaObject unityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+
+        if (unityActivity != null)
+        {
+            AndroidJavaClass toastClass = new AndroidJavaClass("android.widget.Toast");
+            unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() => {
+                    AndroidJavaObject toastObject = toastClass.CallStatic<AndroidJavaObject>("makeText", unityActivity, errorMessage, 0);
+                    toastObject.Call("show");
+                }));
+        }  
+#else
+            Log.Error(errorMessage);
+#endif
+        }
+    }
+
+    #endregion
 }
