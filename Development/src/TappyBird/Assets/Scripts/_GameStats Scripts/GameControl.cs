@@ -20,6 +20,10 @@ public class GameControl : MonoBehaviour
     public bool GameOver = false;
     public float ScrollSpeed;
 
+    [HideInInspector] public int KeepPlayingTimerAmount { get; private set; } = 5;
+
+    [SerializeField] private GameObject _keepPlayingTimerObject;
+
     private int _score = 0;
 
     void Awake()
@@ -107,14 +111,18 @@ public class GameControl : MonoBehaviour
 
         Time.timeScale = 0f;
 
-        //ToDo: start a UI countdown timer here
+        //start a UI countdown timer
+        _keepPlayingTimerObject.SetActive(value: true);
 
         StartCoroutine(KeepPlayingDelay());
     }
 
     private IEnumerator KeepPlayingDelay()
     {
-        yield return new WaitForSeconds(seconds: 5f);
+        yield return new WaitForSeconds(seconds: KeepPlayingTimerAmount);
+
+        //end UI countdown timer
+        _keepPlayingTimerObject.SetActive(value: false);
 
         Time.timeScale = 1f;
         GameOver = false;
