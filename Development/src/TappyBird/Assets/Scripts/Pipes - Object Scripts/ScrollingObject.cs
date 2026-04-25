@@ -8,6 +8,8 @@ public class ScrollingObject : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         rb2d.linearVelocity = new Vector2(GameControl.GameControlInstance.ScrollSpeed, 0);
+
+        Events();
     }
 
     void Update()
@@ -17,4 +19,18 @@ public class ScrollingObject : MonoBehaviour
             rb2d.linearVelocity = Vector2.zero;
         }
     }
+
+    #region Events
+
+    private void Events()
+    {
+        GameControl.GameControlInstance.OnResetScrollingObject += EventListener_OnResetScrollingObject;
+    }
+
+    private void EventListener_OnResetScrollingObject()
+    {
+        rb2d.linearVelocity = new Vector2(GameControl.GameControlInstance.ScrollSpeed, 0);
+    }
+
+    #endregion
 }

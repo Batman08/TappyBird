@@ -12,6 +12,7 @@ public class GameControl : MonoBehaviour
     public event Action OnKeepPlaying;
     public event Action OnResetPlayer;
     public event Action OnResetPipeSpawner;
+    public event Action OnResetScrollingObject;
 
     public AudioSource Source;
     public GameObject GameOverText;
@@ -126,6 +127,8 @@ public class GameControl : MonoBehaviour
 
         Time.timeScale = 1f;
         GameOver = false;
+
+        OnResetScrollingObject.Invoke();
         OnKeepPlaying.Invoke();
     }
 
