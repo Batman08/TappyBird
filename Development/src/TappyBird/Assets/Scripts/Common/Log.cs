@@ -2,7 +2,12 @@ using UnityEngine;
 
 public static class Log
 {
+#if UNITY_EDITOR
     public static bool EnableLogs = true;
+#elif UNITY_ANDROID
+    public static bool EnableLogs = false;
+#endif
+
 
     public static void Info(string msg)
     {
