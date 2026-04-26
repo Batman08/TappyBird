@@ -8,8 +8,16 @@ public class ScrollingObject : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         rb2d.linearVelocity = new Vector2(GameControl.GameControlInstance.ScrollSpeed, 0);
+    }
 
-        Events();
+    void OnEnable()
+    {
+        Events_Subscribe();
+    }
+
+    private void OnDisable()
+    {
+        Events_Unsubscribe();
     }
 
     void Update()
@@ -22,9 +30,14 @@ public class ScrollingObject : MonoBehaviour
 
     #region Events
 
-    private void Events()
+    private void Events_Subscribe()
     {
         GameControl.GameControlInstance.OnResetScrollingObject += EventListener_OnResetScrollingObject;
+    }
+
+    private void Events_Unsubscribe()
+    {
+        GameControl.GameControlInstance.OnResetScrollingObject -= EventListener_OnResetScrollingObject;
     }
 
     private void EventListener_OnResetScrollingObject()

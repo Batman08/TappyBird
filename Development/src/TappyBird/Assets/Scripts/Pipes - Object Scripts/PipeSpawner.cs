@@ -10,7 +10,16 @@ public class PipeSpawner : MonoBehaviour
     private void Start()
     {
         Init_PipeSpawner();
-        Events();
+    }
+
+    void OnEnable()
+    {
+        Events_Subscribe();
+    }
+
+    private void OnDisable()
+    {
+        Events_Unsubscribe();
     }
 
     private void Init_PipeSpawner()
@@ -43,10 +52,16 @@ public class PipeSpawner : MonoBehaviour
 
     #region Events
 
-    private void Events()
+    private void Events_Subscribe()
     {
         GameControl.GameControlInstance.OnResetPipeSpawner += EventListener_OnResetPipeSpawner;
         GameControl.GameControlInstance.OnKeepPlaying += EventListener_OnKeepPlaying;
+    }
+
+    private void Events_Unsubscribe()
+    {
+        GameControl.GameControlInstance.OnResetPipeSpawner -= EventListener_OnResetPipeSpawner;
+        GameControl.GameControlInstance.OnKeepPlaying -= EventListener_OnKeepPlaying;
     }
 
     private void EventListener_OnResetPipeSpawner()

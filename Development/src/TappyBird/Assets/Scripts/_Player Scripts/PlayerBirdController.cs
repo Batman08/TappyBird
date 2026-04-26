@@ -32,8 +32,16 @@ public class PlayerBirdController : MonoBehaviour
     private void Start()
     {
         _rotationZ = Mathf.Clamp(transform.rotation.z, 0, 25);
+    }
 
-        Events();
+    void OnEnable()
+    {
+        Events_Subscribe();
+    }
+
+    private void OnDisable()
+    {
+        Events_Unsubscribe();
     }
 
     private void Update()
@@ -131,10 +139,16 @@ public class PlayerBirdController : MonoBehaviour
 
     #region Events
 
-    private void Events()
+    private void Events_Subscribe()
     {
         GameControl.GameControlInstance.OnResetPlayer += EventListener_OnResetPlayer;
         GameControl.GameControlInstance.OnKeepPlaying += EventListener_OnKeepPlaying;
+    }
+
+    private void Events_Unsubscribe()
+    {
+        GameControl.GameControlInstance.OnResetPlayer -= EventListener_OnResetPlayer;
+        GameControl.GameControlInstance.OnKeepPlaying -= EventListener_OnKeepPlaying;
     }
 
     private void EventListener_OnResetPlayer()
