@@ -12,10 +12,11 @@ public class AdManager : MonoBehaviour
 #if UNITY_EDITOR
     private readonly string TappyBird_KeepPlaying_Reward_Unit_Id = "ca-app-pub-3940256099942544/5224354917";
 #elif UNITY_ANDROID
-    private readonly string TappyBird_KeepPlaying_Reward_Unit_Id = "";
+    private readonly string TappyBird_KeepPlaying_Reward_Unit_Id = "ca-app-pub-3940256099942544/5224354917";
 #endif
     private RewardedAd _rewardedAd;
     private Reward _reward;
+    private bool _isRewarded = false;
 
     private void Awake()
     {
@@ -88,6 +89,9 @@ public class AdManager : MonoBehaviour
 
     public void ShowRewardedAd()
     {
+        // Reset flag
+        _isRewarded = false;
+
         Log.Info("Attempting to show rewarded ad.");
         if (_rewardedAd != null && _rewardedAd.CanShowAd())
         {
@@ -97,6 +101,7 @@ public class AdManager : MonoBehaviour
                 Log.Info($"Reward received: {reward.Type}, amount: {reward.Amount}");
 
                 // The ad was showen and the user earned a reward.
+                _isRewarded = true;
                 _reward = reward;
             });
         }
@@ -120,7 +125,14 @@ public class AdManager : MonoBehaviour
     private void OnAdFullScreenContentClosed_ReloadAd()
     {
         Debug.Log("Ad full screen content closed.");
-        OnShowRewardedAdCompleted?.Invoke(_reward);
+        //if (_isRewarded && _reward != null) OnShowRewardedAdCompleted?.Invoke(_reward);
+
+        // Route the event through the Main Thread Dispatcher
+        MainThreadDispatcher.Enqueue(() =>
+        {
+            // Everything in this block is guaranteed to run on the main thread!
+            if (_isRewarded && _reward != null) OnShowRewardedAdCompleted?.Invoke(_reward);
+        });
 
         // Reload the ad so that we can show another as soon as possible.
         LoadRewardedAd();

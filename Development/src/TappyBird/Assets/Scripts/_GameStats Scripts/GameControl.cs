@@ -26,16 +26,31 @@ public class GameControl : MonoBehaviour
     [SerializeField] private GameObject _keepPlayingTimerObject;
 
     private int _score = 0;
+    private bool _pendingKeepPlaying = false;
 
-    void Awake()
+    private void Awake()
     {
         GameControlSingleton();
         Source = GetComponent<AudioSource>();
     }
 
-    void Start()
+    private void OnEnable()
     {
-        EventListener_OnShowRewardedAdCompleted();
+        Events_Subscribe();
+    }
+
+    private void OnDisable()
+    {
+        Events_Unsubscribe();
+    }
+
+    private void Update()
+    {
+        //if (_pendingKeepPlaying)
+        //{
+        //    _pendingKeepPlaying = false;
+        //    KeepPlaying();
+        //}
     }
 
     private GameControl GameControlSingleton()
@@ -92,13 +107,31 @@ public class GameControl : MonoBehaviour
 
     #region Keep Playing Ad Logic
 
-    private void EventListener_OnShowRewardedAdCompleted()
+    private void Events_Subscribe()
     {
-        Log.Info("Subscribing to AdManager.Instance.OnShowRewardedAdCompleted event.");
+        Debug.Log("Subscribing to events in GameControl.");
         AdManager.Instance.OnShowRewardedAdCompleted += HandleRewardedAd_KeepPlaying;
     }
 
+    private void Events_Unsubscribe()
+    {
+        AdManager.Instance.OnShowRewardedAdCompleted -= HandleRewardedAd_KeepPlaying;
+    }
+
     private void HandleRewardedAd_KeepPlaying(Reward reward)
+    {
+        if (reward != null)
+        {
+            //_pendingKeepPlaying = true;
+            KeepPlaying();
+        }
+        //else
+        //{
+        //    _pendingKeepPlaying = false;
+        //}
+    }
+
+    private void KeepPlaying()
     {
         Log.Info("KEEP PLAYING!!!!");
 
@@ -107,29 +140,32 @@ public class GameControl : MonoBehaviour
 
         GameOverText.SetActive(false);
 
-        OnResetPlayer.Invoke();
-        OnResetPipeSpawner.Invoke();
-
-        Time.timeScale = 0f;
+        OnResetPlayer?.Invoke();
+        OnResetPipeSpawner?.Invoke();
 
         //start a UI countdown timer
         _keepPlayingTimerObject.SetActive(value: true);
 
+        //Time.timeScale = 0f;
+
+
         StartCoroutine(KeepPlayingDelay());
+
     }
 
     private IEnumerator KeepPlayingDelay()
     {
+        //WaitForSecondsRealtime
         yield return new WaitForSeconds(seconds: KeepPlayingTimerAmount);
 
         //end UI countdown timer
         _keepPlayingTimerObject.SetActive(value: false);
 
-        Time.timeScale = 1f;
+        //Time.timeScale = 1f;
         GameOver = false;
 
-        OnResetScrollingObject.Invoke();
-        OnKeepPlaying.Invoke();
+        OnResetScrollingObject?.Invoke();
+        OnKeepPlaying?.Invoke();
     }
 
 
