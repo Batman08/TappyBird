@@ -44,24 +44,14 @@ public class PlayerBirdController : MonoBehaviour
         Events_Unsubscribe();
     }
 
-    private void Update()
-    {
-        Debug.Log(transform.rotation.z);
-        //Movement();
-    }
-
     private void LateUpdate()
     {
         Movement();
-    } // fix scrolling pipe speed or background scrolling
+    }
 
     private void FixedUpdate()
     {
         ClampPos();
-
-        //Vector2 t = transform.position;
-        //t.y = Mathf.Clamp(transform.position.y, vectorDown, vectorUp);
-        //t.y = new Vector2(transform.position.x, transform.position.y);
     }
 
     private Vector2 ClampPos()
@@ -87,21 +77,16 @@ public class PlayerBirdController : MonoBehaviour
                 {
                     _rotationZ = 25;
                     transform.rotation = RotationAmount();
-                    //_transform.Rotate(RotationAmount());
                 }
-                print("turn");
             }
 
-
-
-            else /*if (Input.GetMouseButtonUp(0))*/
+            else
             {
-                //_transform.Rotate(ResetRotation());
                 _transform.rotation = ResetRotation();
-                print("reset");
             }
         }
     }
+
     private Vector2 MovementForce() => new Vector2(0f, upForce);
 
     private Quaternion RotationAmount() => Quaternion.Euler(0, 0, _rotationZ);
@@ -110,14 +95,6 @@ public class PlayerBirdController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //if (collision.gameObject.CompareTag(pipeTag))
-        //{
-        //    StartCoroutine(DestroyPlayer(8));
-        //    _collider2D.enabled = false;
-        //    rb2d.velocity = Vector2.zero;
-        //    isDead = true;
-        //    GameControl.GameControlInstance.BirdDied();
-        //}
         PlayerDeath();
     }
 
