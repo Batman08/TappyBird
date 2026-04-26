@@ -124,13 +124,12 @@ public class AdManager : MonoBehaviour
 
     private void OnAdFullScreenContentClosed_ReloadAd()
     {
-        Debug.Log("Ad full screen content closed.");
-        //if (_isRewarded && _reward != null) OnShowRewardedAdCompleted?.Invoke(_reward);
+        Log.Info("Ad full screen content closed.");
 
         // Route the event through the Main Thread Dispatcher
         MainThreadDispatcher.Enqueue(() =>
         {
-            // Everything in this block is guaranteed to run on the main thread!
+            // Everything in this block is guaranteed to run on the main thread
             if (_isRewarded && _reward != null) OnShowRewardedAdCompleted?.Invoke(_reward);
         });
 

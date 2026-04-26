@@ -26,7 +26,6 @@ public class GameControl : MonoBehaviour
     [SerializeField] private GameObject _keepPlayingTimerObject;
 
     private int _score = 0;
-    private bool _pendingKeepPlaying = false;
 
     private void Awake()
     {
@@ -42,15 +41,6 @@ public class GameControl : MonoBehaviour
     private void OnDisable()
     {
         Events_Unsubscribe();
-    }
-
-    private void Update()
-    {
-        //if (_pendingKeepPlaying)
-        //{
-        //    _pendingKeepPlaying = false;
-        //    KeepPlaying();
-        //}
     }
 
     private GameControl GameControlSingleton()
@@ -122,13 +112,8 @@ public class GameControl : MonoBehaviour
     {
         if (reward != null)
         {
-            //_pendingKeepPlaying = true;
             KeepPlaying();
         }
-        //else
-        //{
-        //    _pendingKeepPlaying = false;
-        //}
     }
 
     private void KeepPlaying()
@@ -146,8 +131,6 @@ public class GameControl : MonoBehaviour
         //start a UI countdown timer
         _keepPlayingTimerObject.SetActive(value: true);
 
-        //Time.timeScale = 0f;
-
 
         StartCoroutine(KeepPlayingDelay());
 
@@ -161,7 +144,6 @@ public class GameControl : MonoBehaviour
         //end UI countdown timer
         _keepPlayingTimerObject.SetActive(value: false);
 
-        //Time.timeScale = 1f;
         GameOver = false;
 
         OnResetScrollingObject?.Invoke();
