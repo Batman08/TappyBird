@@ -4,8 +4,8 @@ using UnityEngine;
 public class PlayerBirdController : MonoBehaviour
 {
     //Upforce original -- 125f
-    public float upForce;
-    public float tiltSmooth = 5f;
+    public float upForce; // Inspector: 100f
+    public float tiltSmooth = 5f; // Inspector: 5f
 
     [SerializeField] private bool isDead = false;
     [SerializeField] private Rigidbody2D rb2d;
@@ -13,9 +13,9 @@ public class PlayerBirdController : MonoBehaviour
     [SerializeField] private AudioSource source;
     [SerializeField] private Collider2D _collider2D;
     [SerializeField] private Transform _transform;
-    [SerializeField] private float _rotationZ;
-    [SerializeField] private float vectorUp;
-    [SerializeField] private float vectorDown;
+    [SerializeField] private float _rotationZ; // Inspector: 0f
+    [SerializeField] private float vectorUp; // Inspector: 1.26f
+    [SerializeField] private float vectorDown; // Inspector: -1.0f
 
     private const string pipeTag = "Pipe";
 
@@ -54,6 +54,14 @@ public class PlayerBirdController : MonoBehaviour
         ClampPos();
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        PlayerDeath();
+    }
+
+
+    #region PositionContraints
+
     private Vector2 ClampPos()
     {
         Vector2 pos = transform.position;
@@ -62,6 +70,11 @@ public class PlayerBirdController : MonoBehaviour
 
         return transform.position;
     }
+
+    #endregion
+
+
+    #region Movement
 
     private void Movement()
     {
@@ -93,10 +106,10 @@ public class PlayerBirdController : MonoBehaviour
 
     private Quaternion ResetRotation() => Quaternion.Lerp(transform.rotation, Quaternion.Euler(0f, 0f, 0f), /*1.0f * */2.5f * Time.deltaTime);
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        PlayerDeath();
-    }
+    #endregion
+
+
+    #region PlayerDeath
 
     private void PlayerDeath()
     {
@@ -112,6 +125,8 @@ public class PlayerBirdController : MonoBehaviour
         yield return new WaitForSeconds(time);
         rb2d.bodyType = RigidbodyType2D.Kinematic;
     }
+
+    #endregion
 
 
     #region Events
