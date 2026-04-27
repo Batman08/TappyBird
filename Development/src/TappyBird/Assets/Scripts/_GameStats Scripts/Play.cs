@@ -22,11 +22,11 @@ public class Play : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(sceneName: SceneNameConstants.MainSceneName);
     }
 
     public void Credits()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(sceneName: SceneNameConstants.CreditSceneName);
     }
 }

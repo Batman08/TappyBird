@@ -91,7 +91,7 @@ public class GameControl : MonoBehaviour
 
     public void ReloadGame() => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
-    public void ExitGame() => SceneManager.LoadScene(0);
+    public void ExitGame() => SceneManager.LoadScene(sceneName: SceneNameConstants.StartSceneName);
 
 
 

@@ -7,6 +7,7 @@ public class AdManager : MonoBehaviour
     public static AdManager Instance { get; private set; }
 
 
+    public event Action OnInitialized;
     public event Action<Reward> OnShowRewardedAdCompleted;
 
 #if UNITY_EDITOR
@@ -33,11 +34,44 @@ public class AdManager : MonoBehaviour
 
     private void Start()
     {
-        InitMobileAds();
+        InitializeAdsWithConsent();
     }
 
 
     #region InitMobileAds
+
+    private void InitializeAdsWithConsent()
+    {
+        if (AdConsentController.CanRequestAds)
+        {
+            InitMobileAds();
+        }
+        else
+        {
+            InitMobileAdsConsent();
+        }
+    }
+
+    private void InitMobileAdsConsent()
+    {
+        AdConsentController.ConsentData((string error) =>
+        {
+            if (string.IsNullOrEmpty(error))
+            {
+                Log.Info("Ad consent successful.");
+            }
+            else
+            {
+                Log.Error($"Ad consent error: {error}");
+            }
+
+            // Initialize Mobile Ads SDK after we have the consent status.
+            if (AdConsentController.CanRequestAds)
+            {
+                MainThreadDispatcher.Enqueue(() => InitMobileAds());
+            }
+        });
+    }
 
     private void InitMobileAds()
     {
@@ -45,6 +79,7 @@ public class AdManager : MonoBehaviour
         MobileAds.Initialize((InitializationStatus initStatus) =>
         {
             LoadRewardedAd();
+            OnInitialized?.Invoke();
             Log.Info("Mobile Ads SDK initialized.");
         });
     }
